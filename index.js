@@ -1,14 +1,15 @@
-import React from "react";
 import {
-  View,
+  Image,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  StyleSheet,
+  View,
 } from "react-native";
+import { closeBtnUri, mapboxLogoUri } from "./images";
+
+import React from "react";
 import usePlacesAutocomplete from "./utils/usePlacesAutocomplete";
-import { mapboxLogoUri, closeBtnUri } from "./images";
 
 /**
  * Main Component
@@ -22,10 +23,9 @@ const MapboxPlacesAutocomplete = ({
   placeholder = "Address",
   accessToken = "",
   onPlaceSelect,
-  countryId = "de",
   onClearInput,
 }) => {
-  const placesAutocomplete = usePlacesAutocomplete("", accessToken, countryId);
+  const placesAutocomplete = usePlacesAutocomplete("", accessToken);
   if (id === "" || typeof id !== "string")
     throw new Error(
       "[MapboxPlacesAutocomplete] Property `id` is required and must be a string."
