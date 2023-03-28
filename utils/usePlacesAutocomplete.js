@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-const usePlacesAutocomplete = (initialValue, accessToken) => {
-  const [value, setValue] = useState(initialValue);
+const usePlacesAutocomplete = (accessToken, setValue, value) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const handleChange = async (inputText) => {
@@ -18,7 +17,6 @@ const usePlacesAutocomplete = (initialValue, accessToken) => {
   };
 
   return {
-    value,
     onChangeText: handleChange,
     setValue,
     suggestions,

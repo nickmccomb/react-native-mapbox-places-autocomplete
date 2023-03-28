@@ -24,8 +24,14 @@ const MapboxPlacesAutocomplete = ({
   accessToken = "",
   onPlaceSelect,
   onClearInput,
+  setValue,
+  value,
 }) => {
-  const placesAutocomplete = usePlacesAutocomplete("", accessToken);
+  const placesAutocomplete = usePlacesAutocomplete(
+    accessToken,
+    setValue,
+    value
+  );
   if (id === "" || typeof id !== "string")
     throw new Error(
       "[MapboxPlacesAutocomplete] Property `id` is required and must be a string."
@@ -41,21 +47,20 @@ const MapboxPlacesAutocomplete = ({
         style={[styles.input, inputStyle]}
         className={inputClassName}
       />
-      {placesAutocomplete.value && (
+      {value && (
         <TouchableOpacity
           style={styles.clearBtn}
           onPress={() => {
-            placesAutocomplete.setValue("");
+            setValue("");
             onClearInput({ id }); // tell the consumer about which input is cleared
           }}
         >
           <Image source={closeBtnUri} style={styles.clearBtnImage} />
         </TouchableOpacity>
       )}
-      {placesAutocomplete.suggestions?.length > 0 &&
-        placesAutocomplete.value && (
-          <PlaceSuggestionList {...{ placesAutocomplete, onPlaceSelect }} />
-        )}
+      {placesAutocomplete.suggestions?.length > 0 && value && (
+        <PlaceSuggestionList {...{ placesAutocomplete, onPlaceSelect }} />
+      )}
     </View>
   );
 };
@@ -69,7 +74,7 @@ const PlaceSuggestionList = ({ placesAutocomplete, onPlaceSelect }) => {
           <TouchableOpacity
             key={index}
             onPress={() => {
-              placesAutocomplete.setValue(suggestion.place_name);
+              setValue(suggestion.place_name);
               placesAutocomplete.setSuggestions([]);
               onPlaceSelect && onPlaceSelect(suggestion);
             }}
