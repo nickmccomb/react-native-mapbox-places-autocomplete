@@ -6,16 +6,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { closeBtnUri, mapboxLogoUri } from "./images";
 
 import React from "react";
+import { closeBtnUri } from "./images";
 import usePlacesAutocomplete from "./utils/usePlacesAutocomplete";
 
 /**
  * Main Component
  */
 const MapboxPlacesAutocomplete = ({
-  id = "",
   inputStyle,
   containerStyle,
   inputClassName = "",
@@ -26,26 +25,31 @@ const MapboxPlacesAutocomplete = ({
   onClearInput,
   setValue,
   value,
+  onPressIn,
 }) => {
+  const id = "origin";
   const placesAutocomplete = usePlacesAutocomplete(
     accessToken,
     setValue,
     value
   );
-  if (id === "" || typeof id !== "string")
-    throw new Error(
-      "[MapboxPlacesAutocomplete] Property `id` is required and must be a string."
-    );
 
   return (
     <View
       style={[styles.container, containerStyle]}
       className={containerClassName}
     >
+      {placesAutocomplete.suggestions?.length > 0 && value && (
+        <PlaceSuggestionList
+          {...{ placesAutocomplete, onPlaceSelect }}
+          setValue={setValue}
+        />
+      )}
       <TextInput
         {...{ ...placesAutocomplete, placeholder }}
-        style={[styles.input, inputStyle]}
+        style={inputStyle}
         className={inputClassName}
+        onPressIn={onPressIn}
       />
       {value && (
         <TouchableOpacity
@@ -58,15 +62,16 @@ const MapboxPlacesAutocomplete = ({
           <Image source={closeBtnUri} style={styles.clearBtnImage} />
         </TouchableOpacity>
       )}
-      {placesAutocomplete.suggestions?.length > 0 && value && (
-        <PlaceSuggestionList {...{ placesAutocomplete, onPlaceSelect }} />
-      )}
     </View>
   );
 };
 
 /** Place Suggestion List below text input */
-const PlaceSuggestionList = ({ placesAutocomplete, onPlaceSelect }) => {
+const PlaceSuggestionList = ({
+  placesAutocomplete,
+  onPlaceSelect,
+  setValue,
+}) => {
   return (
     <View style={styles.suggestionList}>
       {placesAutocomplete.suggestions.map((suggestion, index) => {
@@ -74,6 +79,7 @@ const PlaceSuggestionList = ({ placesAutocomplete, onPlaceSelect }) => {
           <TouchableOpacity
             key={index}
             onPress={() => {
+              console.log(suggestion.place_name);
               setValue(suggestion.place_name);
               placesAutocomplete.setSuggestions([]);
               onPlaceSelect && onPlaceSelect(suggestion);
@@ -83,12 +89,6 @@ const PlaceSuggestionList = ({ placesAutocomplete, onPlaceSelect }) => {
           </TouchableOpacity>
         );
       })}
-      <View style={styles.creditBox}>
-        <Text style={styles.creditText}>
-          powered by <Text style={{ fontWeight: "bold" }}>Mapbox</Text>
-        </Text>
-        <Image source={mapboxLogoUri} style={styles.creditImage} />
-      </View>
     </View>
   );
 };
@@ -105,27 +105,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  input: {
-    color: "#374151",
-    backgroundColor: "#e5e7eb",
-    paddingLeft: 5,
-    paddingRight: 28,
-    paddingVertical: 1,
-    borderRadius: 4,
-    fontSize: 14,
-    width: "100%",
-  },
   clearBtnImage: { width: 20, height: 20 },
   clearBtn: { position: "absolute", top: 6, right: 5 },
   suggestionList: {
     position: "absolute",
-    zIndex: 100,
-    paddingHorizontal: 5,
-    backgroundColor: "#f9fafb",
+    paddingTop: 50,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    backgroundColor: "#212121",
     borderRadius: 4,
     marginHorizontal: 2,
-    top: 32,
-    left: 2,
+    top: -5,
+    left: -40,
+    right: 50,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -133,16 +129,14 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-
-    elevation: 5,
+    borderColor: "#333",
+    borderWidth: 1,
   },
   suggestionItem: {
-    color: "#374151",
+    color: "#FFFFFF",
     fontWeight: "300",
-    fontSize: 12,
-    borderBottomWidth: 0.3,
-    borderBottomColor: "#9ca3af",
-    marginTop: 2,
+    fontSize: 14,
+    paddingVertical: 14,
   },
   creditBox: {
     display: "flex",
