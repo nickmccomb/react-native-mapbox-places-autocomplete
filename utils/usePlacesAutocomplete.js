@@ -3,7 +3,7 @@ import { useState } from "react";
 const usePlacesAutocomplete = (accessToken, setValue, value) => {
   const [suggestions, setSuggestions] = useState([]);
 
-  const handleChange = async (inputText) => {
+  const onChangeText = async (inputText) => {
     setValue(inputText);
 
     try {
@@ -17,10 +17,10 @@ const usePlacesAutocomplete = (accessToken, setValue, value) => {
   };
 
   return {
-    onChangeText: handleChange,
     setValue,
     suggestions,
     setSuggestions,
+    onChangeText,
   };
 };
 
