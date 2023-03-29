@@ -46,6 +46,8 @@ const MapboxPlacesAutocomplete = ({
         />
       )}
       <TextInput
+        autoCorrect={false}
+        value={value}
         {...{ ...placesAutocomplete, placeholder }}
         style={inputStyle}
         className={inputClassName}
@@ -79,7 +81,6 @@ const PlaceSuggestionList = ({
           <TouchableOpacity
             key={index}
             onPress={() => {
-              console.log(suggestion.place_name);
               setValue(suggestion.place_name);
               placesAutocomplete.setSuggestions([]);
               onPlaceSelect && onPlaceSelect(suggestion);
